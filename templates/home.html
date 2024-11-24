@@ -1,0 +1,281 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Tableau de Bord - BNA</title>
+  <link rel="icon" type="image/x-icon" href="fav-removebg-preview.png">
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <style>
+    /* Base Styles */
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: Arial, sans-serif;
+      display: flex;
+      background-color: #f4f6f9;
+    }
+
+    /* Sidebar Styles */
+    aside {
+      width: 250px;
+      background-color: #006e2e;
+      color: #fff;
+      height: 100vh;
+      padding: 1rem;
+      position: fixed;
+    }
+
+    aside h2 {
+      font-size: 1.5rem;
+      margin-bottom: 1rem;
+      text-align: center;
+    }
+
+    aside ul {
+      list-style: none;
+      padding: 0;
+    }
+
+    aside ul li {
+      margin: 1rem 0;
+    }
+
+    aside ul li a {
+      text-decoration: none;
+      color: #fff;
+      font-size: 1rem;
+      display: block;
+      padding: 0.5rem;
+      border-radius: 5px;
+      transition: background-color 0.3s;
+    }
+
+    aside ul li a:hover {
+      background-color: #00853f;
+    }
+
+    /* Main Content Styles */
+    .main-content {
+      margin-left: 260px;
+      padding: 2rem;
+      flex: 1;
+    }
+
+    header {
+      background-color: #006e2e;
+      color: #fff;
+      padding: 1rem 2rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    header h1 {
+      margin: 0;
+      font-size: 1.5rem;
+    }
+
+    header .user-info {
+      font-size: 1rem;
+    }
+
+    .chart-container {
+      background: #fff;
+      padding: 2rem;
+      border-radius: 10px;
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+      text-align: center;
+      margin-bottom: 2rem;
+    }
+
+    .chart-container h2 {
+      font-size: 1.5rem;
+      color: #006e2e;
+      margin-bottom: 1rem;
+    }
+
+    .map-container {
+      margin-top: 2rem;
+    }
+
+    iframe {
+      width: 100%;
+      height: 400px;
+      border: none;
+      border-radius: 10px;
+    }
+
+    footer {
+      margin-top: 2rem;
+      text-align: center;
+      font-size: 0.85rem;
+      color: #666;
+    }
+
+    /* Responsive Design */
+    @media (max-width: 768px) {
+      aside {
+        width: 200px;
+      }
+
+      .main-content {
+        margin-left: 210px;
+        padding: 1rem;
+      }
+
+      header h1 {
+        font-size: 1.2rem;
+      }
+
+      header .user-info {
+        font-size: 0.9rem;
+      }
+
+      .chart-container h2 {
+        font-size: 1.2rem;
+      }
+
+      iframe {
+        height: 300px;
+      }
+    }
+
+    @media (max-width: 576px) {
+      aside {
+        width: 180px;
+      }
+
+      .main-content {
+        margin-left: 190px;
+        padding: 0.8rem;
+      }
+
+      header {
+        flex-direction: column;
+        text-align: center;
+      }
+
+      header h1 {
+        font-size: 1rem;
+        margin-bottom: 0.5rem;
+      }
+
+      header .user-info {
+        font-size: 0.8rem;
+      }
+
+      .chart-container {
+        padding: 1rem;
+      }
+
+      .chart-container h2 {
+        font-size: 1rem;
+      }
+
+      iframe {
+        height: 250px;
+      }
+    }
+
+    @media (max-width: 480px) {
+      aside {
+        position: absolute;
+        width: 100%;
+        height: auto;
+        padding: 0.5rem;
+      }
+
+      .main-content {
+        margin-left: 0;
+        margin-top: 140px;
+        padding: 0.5rem;
+      }
+
+      header {
+        flex-direction: column;
+        padding: 0.5rem;
+      }
+
+      header h1 {
+        font-size: 0.9rem;
+      }
+
+      header .user-info {
+        font-size: 0.7rem;
+      }
+
+      iframe {
+        height: 200px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <!-- Sidebar -->
+  <aside>
+    <h2>BNA</h2>
+    <ul>
+      <li><a href="{% url 'home' %}">Tableau de Bord</a></li>
+      <li><a href="{% url 'agence' %}">Agences</a></li>
+      <li><a href="{% url 'parametres' %}">Paramètres</a></li>
+      <li><a href="{% url 'logout' %}">Déconnexion</a></li> 
+  </ul>
+  </aside>
+
+  <!-- Main Content -->
+  <div class="main-content">
+    <header>
+      <h1>BNA Tableau de Bord</h1>
+      <div class="user-info">
+        Connecté en tant que : <strong>Administrateur</strong>
+      </div>
+    </header>
+
+    <!-- Chart Section -->
+    <div id="charts" class="chart-container">
+      <h2>Performances des Agences</h2>
+      <canvas id="agencesChart"></canvas>
+    </div>
+
+    <div id="agencies" class="map-container">
+        <h2>Localisation des Agences</h2>
+        <iframe
+          src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d26298.13935983352!2d10.1815!3d36.8065!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x12fd34a54e0b68a5%3A0xd3d7f8c7e5b5396f!2sBNA%20Bank!5e0!3m2!1sfr!2stn!4v1690156113152!5m2!1sfr!2stn"
+          allowfullscreen=""
+          loading="lazy">
+        </iframe>
+      </div>
+  </div>
+
+  <script>
+    // Configuration du graphique
+    const ctx = document.getElementById('agencesChart').getContext('2d');
+    const agencesChart = new Chart(ctx, {
+      type: 'bar',
+      data: {
+        labels: ['Tunis', 'Sousse', 'Sfax', 'Monastir', 'Gabès'],
+        datasets: [{
+          label: 'Volume des Transactions (en Millions TND)',
+          data: [12, 9, 15, 8, 7],
+          backgroundColor: ['#006e2e', '#00853f', '#00a14f', '#34c759', '#62d779'],
+          borderColor: '#004d20',
+          borderWidth: 1
+        }]
+      },
+      options: {
+        responsive: true,
+        plugins: {
+          legend: { position: 'top' },
+          title: { display: true, text: 'Volume des Transactions par Agence' }
+        },
+        scales: { y: { beginAtZero: true } }
+      }
+    });
+  </script>
+</body>
+</html>

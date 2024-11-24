@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Connexion - BNA Bank</title>
+  <link rel="icon" type="image/x-icon" href="fav-removebg-preview.png">
+  {% load static %}
+  <link rel="stylesheet" href="{% static 'css/style.css' %}">
+  
+
+
+</head>
+<body>
+  <div class="login-container">
+    <!-- Logo de la BNA -->
+    {% load static %}
+<img src="{% static 'assets/fav-removebg-preview.png' %}" alt="Logo BNA Bank">
+
+    <h2>Connexion BNA</h2>
+    <form method="POST">
+      {% csrf_token %}
+      <label for="username">Nom d'utilisateur</label>
+      <input type="text" id="username" name="username" placeholder="Entrez votre nom d'utilisateur" required>
+
+      <label for="password">Mot de passe</label>
+      <input type="password" id="password" name="password" placeholder="Entrez votre mot de passe" required>
+          {% if messages %}
+    <div class="messages">
+        {% for message in messages %}
+            <p class="error">{{ message }}</p>
+        {% endfor %}
+    </div>
+{% endif %}
+      <button type="submit">Se connecter</button>
+    </form>
+    <div class="footer-text">
+      <p>Mot de passe oublié ? <a href="#">Réinitialiser</a></p>
+    </div>
+  </div>
+</body>
+</html>
